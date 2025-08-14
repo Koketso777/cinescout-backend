@@ -8,11 +8,11 @@ TMDB_BASE = "https://api.themoviedb.org/3"
 
 app = FastAPI(title="CineScout API", version="1.0.0")
 
-# Allow your GitHub Pages site + localhost for dev
+# Allow your local dev + GitHub Pages
 origins = [
     "http://localhost:5173",
-    "https://koketso777.github.io",         # entire user pages domain
-    "https://koketso777.github.io/cinescout" # specific repo pages
+    "https://koketso777.github.io",
+    "https://koketso777.github.io/cinescout"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -33,7 +33,6 @@ def root():
 
 @app.get("/search")
 async def search_movies(q: str, page: int = 1):
-    # TMDB search
     url = f"{TMDB_BASE}/search/movie"
     params = auth_params() | {"query": q, "page": page, "include_adult": "false"}
     async with httpx.AsyncClient(timeout=10.0) as client:
@@ -41,7 +40,6 @@ async def search_movies(q: str, page: int = 1):
     if r.status_code != 200:
         raise HTTPException(status_code=r.status_code, detail=r.text)
     data = r.json()
-    # minimal normalization
     results = []
     for m in data.get("results", []):
         results.append({
@@ -56,7 +54,6 @@ async def search_movies(q: str, page: int = 1):
 
 @app.get("/movie/{movie_id}")
 async def movie_detail(movie_id: int):
-    # Details + credits in one call (two requests)
     async with httpx.AsyncClient(timeout=10.0) as client:
         detail = await client.get(f"{TMDB_BASE}/movie/{movie_id}", params=auth_params())
         credits = await client.get(f"{TMDB_BASE}/movie/{movie_id}/credits", params=auth_params())
