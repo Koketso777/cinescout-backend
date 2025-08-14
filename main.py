@@ -9,17 +9,20 @@ TMDB_BASE = "https://api.themoviedb.org/3"
 app = FastAPI(title="CineScout API", version="1.0.0")
 
 # Allow your local dev + GitHub Pages
+# IMPORTANT: origin must match exactly, including port.
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5174",             # your Vite dev server port (per your screenshot)
+    "http://localhost:5173",             # keep this too in case Vite uses default on other machines
     "https://koketso777.github.io",
     "https://koketso777.github.io/cinescout"
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET"],
-    allow_headers=["*"],
+    allow_credentials=True,     # fine to keep True; use specific origins (not "*") when True
+    allow_methods=["*"],        # allow GET/OPTIONS/etc during dev
+    allow_headers=["*"],        # allow all headers during dev
 )
 
 def auth_params():
