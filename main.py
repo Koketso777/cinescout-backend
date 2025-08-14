@@ -15,7 +15,7 @@ origins = [
     "http://localhost:5173",             # keep this too in case Vite uses default on other machines
     "https://koketso777.github.io",
     "https://koketso777.github.io/cinescout",
-    "https://koketso777.github.io/cinescout-backend"
+  #  "https://koketso777.github.io/cinescout-backend"
 ]
 
 app.add_middleware(
